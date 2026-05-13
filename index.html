@@ -736,7 +736,7 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxX7zrMG1_7WuFFFMgHBZbjwrPbsOM4ZIEQeY8edIUYdoL9gZstCr9OCh7zGvZzAxHD/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxr4RV0fzaY51CjA4P-exTY9oSHBpCP0icOPyBFhrzwQZp-82R-8u9IvEnjONwgcKzb/exec";
 
     // Modal Functions
     function openLoginModal() {
@@ -809,45 +809,55 @@
 
     // Login Function
     async function login() {
-        const studentId = document.getElementById('studentId').value.trim();
-        const password = document.getElementById('password').value;
+    const studentId = document.getElementById('studentId').value.trim();
+    const password = document.getElementById('password').value;
 
-        if (!studentId || !password) {
-            showAlert('Please enter Student ID and Password', 'error');
-            return;
-        }
-
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-
-        try {
-            const response = await fetch(`${SCRIPT_URL}?id=${encodeURIComponent(studentId)}&password=${encodeURIComponent(password)}`);
-            const data = await response.json();
-
-            if (data.success) {
-                localStorage.setItem('userData', JSON.stringify(data));
-                localStorage.setItem('studentId', studentId);
-                showAlert('Login successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            } else if (data.error === 'STUDENT_NOT_FOUND') {
-                showAlert('Student ID not found. Please register or contact admin.', 'error');
-            } else if (data.error === 'WRONG_PASSWORD') {
-                showAlert('Incorrect password. Please try again.', 'error');
-            } else {
-                showAlert(data.message || 'Login failed. Please try again.', 'error');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            showAlert('Network error. Please check your connection.', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
+    if (!studentId || !password) {
+        showAlert('Please enter Student ID and Password', 'error');
+        return;
     }
+
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+    try {
+        // FIX: Use POST with action parameter
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'student_login',
+                id: studentId,
+                password: password
+            })
+        });
+        
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('userData', JSON.stringify(data));
+            localStorage.setItem('studentId', studentId);
+            showAlert('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        } else if (data.error === 'STUDENT_NOT_FOUND') {
+            showAlert('Student ID not found. Please register or contact admin.', 'error');
+        } else if (data.error === 'WRONG_PASSWORD') {
+            showAlert('Incorrect password. Please try again.', 'error');
+        } else {
+            showAlert(data.message || 'Login failed. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showAlert('Network error. Please check your connection.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
 
     // Register Function
     async function register() {
