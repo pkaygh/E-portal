@@ -264,8 +264,7 @@
         <input type="text" id="adminUsername" placeholder="Username">
         <input type="password" id="adminPassword" placeholder="Password">
         <button onclick="adminLogin()">Login</button>
-        <p style="margin-top: 15px; font-size: 0.8rem;">Demo: admin / admin123</p>
-    </div>
+        </div>
 </div>
 
 <!-- Admin Dashboard -->
@@ -332,15 +331,12 @@
 <div id="toast" class="toast" style="display: none;"></div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfogJsMCHdMBG3_mGAN0ZR9ATD304HaeEYmlU-WsU0QA7Rz1r1qc7pVq131HmIt-Rj/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEGACvrGWWUsqqkuF9VA2pMgXCRlcd5LlNOt5N6YchtU80bKrb9RaI_Zg5aAboIdvp/exec";
     
     // Admin credentials
-    const ADMIN_CREDENTIALS = {
-        admin: { password: "admin123", name: "System Administrator", role: "Super Admin" },
-        accountant: { password: "acc2026", name: "Finance Officer", role: "Accountant" },
-        registrar: { password: "reg2026", name: "Academic Registrar", role: "Registrar" }
-    };
-    
+    // Admin credentials will be loaded from Google Sheets
+let ADMIN_CREDENTIALS = {};
+
     let currentAdmin = null;
     let allStudents = [];
 
@@ -348,21 +344,58 @@
     // LOGIN FUNCTIONS
     // ============================================
     
-    function adminLogin() {
-        const username = document.getElementById('adminUsername').value.trim();
-        const password = document.getElementById('adminPassword').value;
+    async function adminLogin() {
+    const username = document.getElementById('adminUsername').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    
+    if (!username || !password) {
+        showToast("Please enter username and password", "error");
+        return;
+    }
+    
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    
+    try {
+        // Check against Google Sheets
+        const response = await fetch(`${SCRIPT_URL}?action=verify_admin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+        const data = await response.json();
         
-        if (ADMIN_CREDENTIALS[username] && ADMIN_CREDENTIALS[username].password === password) {
-            currentAdmin = ADMIN_CREDENTIALS[username];
+        if (data.success) {
+            currentAdmin = {
+                name: data.name,
+                role: data.role,
+                username: username
+            };
             document.getElementById('loginOverlay').classList.add('hide');
             document.getElementById('adminDashboard').style.display = 'flex';
             document.getElementById('adminName').innerText = currentAdmin.name;
             showToast(`Welcome, ${currentAdmin.name}!`, "success");
             loadAdminOverview();
         } else {
-            showToast("Invalid credentials", "error");
+            showToast("Invalid credentials. Access denied.", "error");
         }
+    } catch (error) {
+        console.error("Admin login error:", error);
+        showToast("Login error. Please try again.", "error");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
+}
+
+// Add this function to verify admin from Google Sheets
+async function verifyAdminFromSheet(username, password) {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=verify_admin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+        return await response.json();
+    } catch (error) {
+        console.error("Error verifying admin:", error);
+        return { success: false };
+    }
+}
     
     function logout() {
         if (confirm("Are you sure?")) {
@@ -1553,33 +1586,20 @@
     }
     
     // Load dashboard on init
-    window.onload = function() {
-        // Check if already logged in (demo)
-        if (localStorage.getItem('adminLoggedIn') === 'true') {
+   window.onload = function() {
+    // Check session storage for existing login
+    const adminSession = sessionStorage.getItem('adminLoggedIn');
+    if (adminSession === 'true') {
+        const adminData = JSON.parse(sessionStorage.getItem('adminData') || '{}');
+        if (adminData.name) {
             document.getElementById('loginOverlay').classList.add('hide');
             document.getElementById('adminDashboard').style.display = 'flex';
-            currentAdmin = { name: "Administrator", role: "Super Admin" };
-            document.getElementById('adminName').innerText = "Administrator";
+            currentAdmin = adminData;
+            document.getElementById('adminName').innerText = currentAdmin.name;
             loadAdminOverview();
-        }
-    };
-    
-    function adminLogin() {
-        const username = document.getElementById('adminUsername').value;
-        const password = document.getElementById('adminPassword').value;
-        
-        if (username === 'admin' && password === 'admin123') {
-            localStorage.setItem('adminLoggedIn', 'true');
-            document.getElementById('loginOverlay').classList.add('hide');
-            document.getElementById('adminDashboard').style.display = 'flex';
-            currentAdmin = { name: "Administrator", role: "Super Admin" };
-            document.getElementById('adminName').innerText = "Administrator";
-            showToast("Login successful!", "success");
-            loadAdminOverview();
-        } else {
-            showToast("Invalid credentials", "error");
         }
     }
+};
 </script>
 
 <!-- Add PapaParse for CSV parsing -->
