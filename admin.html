@@ -333,7 +333,7 @@
 <script>
     const API_KEY = "CCST-ADMIN-2026-SECRET-67890";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRdPk50P6r-pibmbI-NqebqcOwm-Xymulmiw3I_joFR2gcS1PyO7DR0wBpdKDbKltW/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzKMeXMsqPY4PXKSOdMYRo4HoR_KEQJOvi2duk1Cm8aS90oZSA6ormg1AWmk7FrVrw/exec";
     
     // Admin credentials
     // Admin credentials will be loaded from Google Sheets
@@ -347,56 +347,46 @@ let ADMIN_CREDENTIALS = {};
     // ============================================
     
     async function adminLogin() {
-    const username = document.getElementById('adminUsername').value.trim();
-    const password = document.getElementById('adminPassword').value;
+        const username = document.getElementById('adminUsername').value.trim();
+        const password = document.getElementById('adminPassword').value;
 
-     // After successful verification, generate a session token
-    const response = await fetch(`${SCRIPT_URL}?action=verify_admin&username=${username}&password=${password}`);
-    const data = await response.json();
-    
-    if (data.success) {
-        // Generate a random session token
-        const sessionToken = btoa(username + Date.now() + Math.random());
-        localStorage.setItem('adminToken', sessionToken);
-        localStorage.setItem('adminUser', username);
-    
-    if (!username || !password) {
-        showToast("Please enter username and password", "error");
-        return;
-    }
-    
-    const btn = event.target;
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-    
-    try {
-        // Check against Google Sheets
-        const response = await fetch(`${SCRIPT_URL}?action=verify_admin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
-        const data = await response.json();
-        
-        if (data.success) {
-            currentAdmin = {
-                name: data.name,
-                role: data.role,
-                username: username
-            };
-            document.getElementById('loginOverlay').classList.add('hide');
-            document.getElementById('adminDashboard').style.display = 'flex';
-            document.getElementById('adminName').innerText = currentAdmin.name;
-            showToast(`Welcome, ${currentAdmin.name}!`, "success");
-            loadAdminOverview();
-        } else {
-            showToast("Invalid credentials. Access denied.", "error");
+        if (!username || !password) {
+            showToast("Please enter username and password", "error");
+            return;
         }
-    } catch (error) {
-        console.error("Admin login error:", error);
-        showToast("Login error. Please try again.", "error");
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+        try {
+            // Check against Google Sheets
+            const response = await fetch(`${SCRIPT_URL}?action=verify_admin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+            const data = await response.json();
+
+            if (data.success) {
+                currentAdmin = {
+                    name: data.name,
+                    role: data.role,
+                    username: username
+                };
+                document.getElementById('loginOverlay').classList.add('hide');
+                document.getElementById('adminDashboard').style.display = 'flex';
+                document.getElementById('adminName').innerText = currentAdmin.name;
+                showToast(`Welcome, ${currentAdmin.name}!`, "success");
+                loadAdminOverview();
+            } else {
+                showToast("Invalid credentials. Access denied.", "error");
+            }
+        } catch (error) {
+            console.error("Admin login error:", error);
+            showToast("Login error. Please try again.", "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
-}
 
 // Add this function to verify admin from Google Sheets
 async function verifyAdminFromSheet(username, password) {
@@ -636,15 +626,16 @@ async function verifyAdminFromSheet(username, password) {
             email: document.getElementById('studentEmail').value,
             phone: document.getElementById('studentPhone').value
         };
-        
+
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
+                mode: 'cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(studentData)
             });
             const result = await response.json();
-            
+
             if (result.success) {
                 showToast("Student added successfully!", "success");
                 document.getElementById('addStudentForm').reset();
