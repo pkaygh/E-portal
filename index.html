@@ -183,7 +183,7 @@
 </div>
 <script>
 const API_KEY = "CCST-SECURE-KEY-2026-12345";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZBpa-xlsiHeABmgAfP6xtxK9XgSRpNrGwsODUK3G1IsAguuzxxDOiEojJfon_CXVD/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZWbLAxyFsFDFYYDBDnOF3uDHEXj5vGUtThLkGds8FYofqYeqz6BkXjWQF11NuIi2x/exec";
 
 function openLoginModal() { document.getElementById('modalTitle').innerText='Student Login'; document.getElementById('modalSubtitle').innerText='Access your student portal'; document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
 function openRegisterModal() { document.getElementById('modalTitle').innerText='Student Registration'; document.getElementById('modalSubtitle').innerText='Create your account'; document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
@@ -218,20 +218,62 @@ async function register() {
 }
 
 async function login() {
-    const studentId=document.getElementById('studentId').value.trim(); const password=document.getElementById('password').value;
-    if(!studentId||!password) { showAlert('Please enter Student ID and Password','error'); return; }
-    const btn=document.getElementById('loginBtn'); const originalText=btn.innerHTML;
-    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Logging in...';
+    const studentId = document.getElementById('studentId').value.trim();
+    const password = document.getElementById('password').value;
+    
+    if (!studentId || !password) {
+        showAlert('Please enter Student ID and Password', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('loginBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+    
     try {
-        const response=await fetch(SCRIPT_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'student_login',api_key:API_KEY,id:studentId,password:password})});
-        if(!response.ok) throw new Error('HTTP error: '+response.status);
-        const data=await response.json();
-        if(data.success) { localStorage.setItem('userData',JSON.stringify(data)); localStorage.setItem('studentId',studentId); showAlert('Login successful! Redirecting...','success'); setTimeout(()=>{window.location.href='dashboard.html';},1500); }
-        else if(data.error==='STUDENT_NOT_FOUND') { showAlert('Student ID not found. Please register first.','error'); }
-        else if(data.error==='WRONG_PASSWORD') { showAlert('Incorrect password. Please try again.','error'); }
-        else { showAlert(data.message||'Login failed. Please try again.','error'); }
-    } catch(error) { showAlert('Network error: '+error.message,'error'); }
-    finally { btn.disabled=false; btn.innerHTML=originalText; }
+        // Fix: Properly format the request
+        const requestData = {
+            action: 'student_login',
+            id: studentId,
+            password: password
+        };
+        
+        console.log('Sending login request:', requestData);
+        
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        
+        const data = await response.json();
+        console.log('Login response:', data);
+        
+        if (data.success) {
+            localStorage.setItem('userData', JSON.stringify(data));
+            localStorage.setItem('studentId', studentId);
+            showAlert('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        } else if (data.error === 'STUDENT_NOT_FOUND') {
+            showAlert('Student ID not found. Please register first or contact admin.', 'error');
+        } else if (data.error === 'WRONG_PASSWORD') {
+            showAlert('Incorrect password. Please try again.', 'error');
+        } else {
+            showAlert(data.message || 'Login failed. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showAlert('Network error: ' + error.message + '. Make sure the backend is deployed.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
 }
 
 function showForgotPassword() { showAlert('Please contact the IT department at +233 20 445 8182 for password reset assistance.','info'); }
