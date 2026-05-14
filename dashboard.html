@@ -3597,7 +3597,7 @@ async function updatePassword() {
         // Send to backend
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
                 action: 'change_password',
                 studentId: studentId,
@@ -3755,7 +3755,7 @@ function downloadMyData() {
     };
     
     const dataStr = JSON.stringify(myData, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
+    const blob = new Blob([dataStr], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

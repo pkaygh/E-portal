@@ -640,7 +640,7 @@ async function verifyAdminFromSheet(username, password) {
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(studentData)
             });
             const result = await response.json();
@@ -759,7 +759,7 @@ async function verifyAdminFromSheet(username, password) {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'upload_results',
                         id: row.StudentID,
@@ -858,7 +858,7 @@ async function verifyAdminFromSheet(username, password) {
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     action: 'upload_results',
                     id: studentId,
@@ -983,7 +983,7 @@ async function verifyAdminFromSheet(username, password) {
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(courseData)
             });
             const result = await response.json();
@@ -1057,7 +1057,7 @@ async function verifyAdminFromSheet(username, password) {
             
             await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(paymentData)
             });
         }
@@ -1071,7 +1071,7 @@ async function verifyAdminFromSheet(username, password) {
             
             await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(feeData)
             });
         }
@@ -1090,7 +1090,7 @@ async function verifyAdminFromSheet(username, password) {
         
         await fetch(SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
                 action: 'toggle_clearance',
                 id: studentId,
@@ -1178,7 +1178,7 @@ async function verifyAdminFromSheet(username, password) {
         
         await fetch(SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8'  },
             body: JSON.stringify({
                 action: 'toggle_clearance',
                 id: studentId,
@@ -1216,7 +1216,7 @@ async function verifyAdminFromSheet(username, password) {
     async function quickClear(studentId) {
         await fetch(SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action: 'toggle_clearance', id: studentId, cleared: true })
         });
         showToast(`Student ${studentId} cleared!`, "success");
@@ -1235,7 +1235,7 @@ async function verifyAdminFromSheet(username, password) {
                     if (row.StudentID) {
                         await fetch(SCRIPT_URL, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                             body: JSON.stringify({ action: 'toggle_clearance', id: row.StudentID, cleared: true })
                         });
                         count++;
@@ -1308,7 +1308,7 @@ async function verifyAdminFromSheet(username, password) {
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(data)
             });
             const result = await response.json();
@@ -1447,7 +1447,7 @@ async function verifyAdminFromSheet(username, password) {
         try {
             await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8'},
                 body: JSON.stringify(data)
             });
             showToast(`${name} registered as alumni!`, "success");
