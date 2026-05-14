@@ -760,8 +760,11 @@
 </div>
 
 <script>
+    // IMPORTANT: Change this to a strong random key!
+const API_KEY = "CCST-SECURE-KEY-2026-12345";
+
     // IMPORTANT: Replace this with your actual Google Apps Script URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEGACvrGWWUsqqkuF9VA2pMgXCRlcd5LlNOt5N6YchtU80bKrb9RaI_Zg5aAboIdvp/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwP8I2yhQa5OMk3q3-w0Ut_AGkEwKo6H7UCgK6HFrwiu9Hv_Ocw9AKwyZaTMIZwFxcH/exec";
 
     // Modal Functions
     function openLoginModal() {
@@ -892,6 +895,7 @@
                 },
                 body: JSON.stringify({
                     action: 'register',
+                    api_key: API_KEY,
                     name: name,
                     id: id,
                     program: program,
@@ -958,6 +962,7 @@
                 },
                 body: JSON.stringify({
                     action: 'student_login',
+                    api_key: API_KEY,
                     id: studentId,
                     password: password
                 })

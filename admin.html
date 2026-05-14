@@ -331,7 +331,9 @@
 <div id="toast" class="toast" style="display: none;"></div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEGACvrGWWUsqqkuF9VA2pMgXCRlcd5LlNOt5N6YchtU80bKrb9RaI_Zg5aAboIdvp/exec";
+    const API_KEY = "CCST-ADMIN-2026-SECRET-67890";
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwP8I2yhQa5OMk3q3-w0Ut_AGkEwKo6H7UCgK6HFrwiu9Hv_Ocw9AKwyZaTMIZwFxcH/exec";
     
     // Admin credentials
     // Admin credentials will be loaded from Google Sheets
@@ -347,6 +349,16 @@ let ADMIN_CREDENTIALS = {};
     async function adminLogin() {
     const username = document.getElementById('adminUsername').value.trim();
     const password = document.getElementById('adminPassword').value;
+
+     // After successful verification, generate a session token
+    const response = await fetch(`${SCRIPT_URL}?action=verify_admin&username=${username}&password=${password}`);
+    const data = await response.json();
+    
+    if (data.success) {
+        // Generate a random session token
+        const sessionToken = btoa(username + Date.now() + Math.random());
+        localStorage.setItem('adminToken', sessionToken);
+        localStorage.setItem('adminUser', username);
     
     if (!username || !password) {
         showToast("Please enter username and password", "error");
@@ -570,7 +582,7 @@ async function verifyAdminFromSheet(username, password) {
     
     async function loadAllStudentsList() {
         try {
-            const response = await fetch(`${SCRIPT_URL}?action=get_all_students`);
+            const response = await fetch(`${SCRIPT_URL}?action=get_all_students&api_key=${API_KEY}`);
             const data = await response.json();
             allStudents = data.students || [];
             displayStudentsList(allStudents);
@@ -615,6 +627,7 @@ async function verifyAdminFromSheet(username, password) {
     async function addStudent() {
         const studentData = {
             action: 'register',
+            api_key: API_KEY,
             name: document.getElementById('studentName').value,
             id: document.getElementById('studentId').value,
             program: document.getElementById('studentProgram').value,
@@ -957,6 +970,7 @@ async function verifyAdminFromSheet(username, password) {
     async function addCourse() {
         const courseData = {
             action: 'save_course',
+            api_key: API_KEY,
             semester: document.getElementById('courseSemester').value,
             program: document.getElementById('courseProgram').value,
             level: document.getElementById('courseLevel').value,
@@ -1032,6 +1046,7 @@ async function verifyAdminFromSheet(username, password) {
         if (paymentAmount && paymentAmount > 0) {
             const paymentData = {
                 action: 'update_payment',
+                api_key: API_KEY,
                 studentId: studentId,
                 amount: parseFloat(paymentAmount),
                 description: document.getElementById('paymentDescription').value || "Fee Payment",
