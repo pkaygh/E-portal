@@ -2,87 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <meta name="theme-color" content="#1a472a">
-    <meta name="description" content="CCST Student Portal - Central College of Science and Technology">
     <title>CCST Student Portal | Home</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #6b8e23; --primary-light: #9acd32; --primary-dark: #1a472a;
-            --secondary: #8b4513; --accent: #daa520; --bg-light: #f5f5dc;
-            --bg-dark: #1a1a2e; --text-dark: #2f4f2f; --text-light: #6b8e6b; --white: #ffffff;
-            --shadow: 0 10px 40px rgba(0,0,0,0.1); --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+            --bg-light: #f5f5dc; --white: #ffffff; --shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
-        body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%); min-height: 100vh; overflow-x: hidden; }
-        .navbar { position: fixed; top: 0; left: 0; right: 0; background: rgba(26,71,42,0.95); backdrop-filter: blur(10px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%); min-height: 100vh; }
+        .navbar { position: fixed; top: 0; left: 0; right: 0; background: rgba(26,71,42,0.95); backdrop-filter: blur(10px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         .logo { display: flex; align-items: center; gap: 10px; }
-        .logo-icon { width: 40px; height: 40px; background: var(--primary-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary-dark); font-size: 1.2rem; }
+        .logo-icon { width: 40px; height: 40px; background: var(--primary-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary-dark); }
         .logo h1 { color: white; font-size: 1.3rem; }
         .nav-links { display: flex; gap: 30px; align-items: center; }
         .nav-links a { color: white; text-decoration: none; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary-light); }
         .login-btn { background: var(--primary-light); color: var(--primary-dark) !important; padding: 8px 25px; border-radius: 30px; font-weight: 600; }
-        .login-btn:hover { background: white; transform: translateY(-2px); }
-        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 100px 20px 50px; position: relative; }
-        .hero-content { max-width: 800px; z-index: 2; }
-        .hero-badge { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); display: inline-block; padding: 8px 20px; border-radius: 30px; font-size: 0.8rem; color: var(--primary-dark); margin-bottom: 20px; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 100px 20px 50px; }
+        .hero-content { max-width: 800px; }
         .hero h1 { font-size: 3rem; color: var(--primary-dark); margin-bottom: 20px; }
-        .hero p { font-size: 1.1rem; color: #444; margin-bottom: 30px; line-height: 1.6; }
-        .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        .btn-primary { background: linear-gradient(135deg,var(--primary-dark),var(--primary)); color: white; padding: 14px 35px; border-radius: 40px; text-decoration: none; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(107,142,35,0.3); }
-        .btn-outline { border: 2px solid var(--primary); color: var(--primary-dark); padding: 12px 35px; border-radius: 40px; text-decoration: none; font-weight: 600; transition: all 0.3s; background: white; }
-        .btn-outline:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+        .hero p { font-size: 1.1rem; color: #444; margin-bottom: 30px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 14px 35px; border-radius: 40px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-outline { border: 2px solid var(--primary); color: var(--primary-dark); padding: 12px 35px; border-radius: 40px; text-decoration: none; font-weight: 600; background: white; }
         .features { padding: 80px 40px; background: white; }
         .section-title { text-align: center; font-size: 2rem; color: var(--primary-dark); margin-bottom: 50px; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
         .feature-card { text-align: center; padding: 30px; border-radius: 20px; background: var(--bg-light); transition: all 0.3s; }
         .feature-card:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
-        .feature-icon { width: 70px; height: 70px; background: linear-gradient(135deg,var(--primary-dark),var(--primary)); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem; }
-        .feature-card h3 { color: var(--primary-dark); margin-bottom: 10px; }
-        .feature-card p { color: #666; line-height: 1.5; }
-        .stats { background: linear-gradient(135deg,var(--primary-dark),var(--primary)); padding: 60px 40px; color: white; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 40px; max-width: 1000px; margin: 0 auto; text-align: center; }
-        .stat-item h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .feature-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem; }
+        .stats { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); padding: 60px 40px; color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1000px; margin: 0 auto; text-align: center; }
+        .stat-item h2 { font-size: 2.5rem; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
         .modal.show { display: flex; }
-        .modal-content { background: white; border-radius: 24px; max-width: 500px; width: 90%; padding: 30px; position: relative; animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-header { text-align: center; margin-bottom: 25px; }
-        .modal-header .logo-icon { margin: 0 auto 15px; }
-        .modal-header h2 { color: var(--primary-dark); }
+        .modal-content { background: white; border-radius: 24px; max-width: 500px; width: 90%; padding: 30px; max-height: 90vh; overflow-y: auto; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
-        .input-group input, .input-group select { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary); }
-        .modal-btn { width: 100%; padding: 14px; background: linear-gradient(135deg,var(--primary-dark),var(--primary)); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .modal-btn:hover { transform: translateY(-2px); }
-        .modal-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .modal-footer { text-align: center; margin-top: 20px; }
-        .modal-footer a { color: var(--primary); text-decoration: none; cursor: pointer; }
+        .input-group input, .input-group select { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; }
+        .modal-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999; }
-        .toggle-form { text-align: center; margin-top: 15px; }
-        .toggle-form a { color: var(--primary); cursor: pointer; text-decoration: none; }
-        .alert { padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 0.85rem; display: none; }
-        .alert.error { background: #fee2e2; color: #dc2626; border-left: 4px solid #dc2626; display: block; }
-        .alert.success { background: #dcfce7; color: #16a34a; border-left: 4px solid #16a34a; display: block; }
-        .alert.info { background: #dbeafe; color: #2563eb; border-left: 4px solid #2563eb; display: block; }
+        .alert { padding: 12px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        .alert.error { background: #fee2e2; color: #dc2626; display: block; }
+        .alert.success { background: #dcfce7; color: #16a34a; display: block; }
         .footer { background: var(--primary-dark); color: white; padding: 40px; text-align: center; }
-        .footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; }
-        .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; }
-        .footer-links a:hover { color: white; }
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .social-icons a { width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: 0.3s; }
-        .social-icons a:hover { background: var(--primary-light); transform: translateY(-3px); }
         @media (max-width: 768px) {
             .navbar { padding: 12px 20px; }
             .nav-links { display: none; }
             .hero h1 { font-size: 2rem; }
-            .features { padding: 50px 20px; }
-            .section-title { font-size: 1.5rem; }
-            .stats-grid { gap: 20px; }
-            .stat-item h2 { font-size: 1.8rem; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -92,32 +59,34 @@
 <nav class="navbar">
     <div class="logo"><div class="logo-icon"><i class="fas fa-graduation-cap"></i></div><h1>CCST PORTAL</h1></div>
     <div class="nav-links">
-        <a href="#home">Home</a><a href="#features">Features</a><a href="#about">About</a><a href="#contact">Contact</a>
+        <a href="#home">Home</a><a href="#features">Features</a><a href="#about">About</a>
         <a href="#" class="login-btn" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Login</a>
     </div>
 </nav>
+
 <section class="hero" id="home">
     <div class="hero-content">
-        <span class="hero-badge"><i class="fas fa-star"></i> Excellence in Healthcare Education</span>
         <h1>Welcome to <span style="color:var(--primary)">CCST</span> Student Portal</h1>
-        <p>Your gateway to academic excellence, financial management, and campus resources. Access results, register for courses, make payments, and stay connected with the college community.</p>
+        <p>Your gateway to academic excellence, financial management, and campus resources.</p>
         <div class="cta-buttons">
             <a href="#" class="btn-primary" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Student Login</a>
             <a href="#" class="btn-outline" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i> Register Account</a>
         </div>
     </div>
 </section>
+
 <section class="features" id="features">
     <h2 class="section-title">Everything You Need, All in One Place</h2>
     <div class="features-grid">
-        <div class="feature-card"><div class="feature-icon"><i class="fas fa-chart-line"></i></div><h3>Academic Results</h3><p>View your semester results, GPA, and academic standing in real-time.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="fas fa-credit-card"></i></div><h3>Financial Management</h3><p>Check fee balances, make payments, and download receipts instantly.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="fas fa-check-square"></i></div><h3>Course Registration</h3><p>Register for courses online, track credits, and manage your schedule.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="fas fa-file-pdf"></i></div><h3>Transcript Requests</h3><p>Request official transcripts and attestation letters online.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="fas fa-bell"></i></div><h3>Real-time Notifications</h3><p>Receive important updates about academics, fees, and campus events.</p></div>
-        <div class="feature-card"><div class="feature-icon"><i class="fas fa-id-card"></i></div><h3>Digital ID Card</h3><p>Access your digital student ID card anytime, anywhere.</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-chart-line"></i></div><h3>Academic Results</h3><p>View your semester results and GPA in real-time.</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-credit-card"></i></div><h3>Financial Management</h3><p>Check fee balances and make payments instantly.</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-check-square"></i></div><h3>Course Registration</h3><p>Register for courses online and track credits.</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-file-pdf"></i></div><h3>Transcript Requests</h3><p>Request official transcripts online.</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-bell"></i></div><h3>Real-time Notifications</h3><p>Receive important updates instantly.</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-id-card"></i></div><h3>Digital ID Card</h3><p>Access your digital student ID anytime.</p></div>
     </div>
 </section>
+
 <section class="stats">
     <div class="stats-grid">
         <div class="stat-item"><h2>3+</h2><p>Professional Programs</p></div>
@@ -126,1105 +95,97 @@
         <div class="stat-item"><h2>24/7</h2><p>Access Available</p></div>
     </div>
 </section>
-<section class="features" id="about" style="background:var(--bg-light)">
-    <h2 class="section-title">About Central College of Science and Technology</h2>
-    <div class="features-grid" style="max-width:800px">
-        <div class="feature-card"><div class="feature-icon" style="background:var(--accent)"><i class="fas fa-map-marker-alt"></i></div><h3>Location</h3><p>Agona Swedru, Central Region, Ghana</p></div>
-        <div class="feature-card"><div class="feature-icon" style="background:var(--secondary)"><i class="fas fa-calendar-alt"></i></div><h3>Established</h3><p>2005 - Over 20 years of excellence</p></div>
-        <div class="feature-card"><div class="feature-icon" style="background:var(--success)"><i class="fas fa-stethoscope"></i></div><h3>Programs</h3><p>Nursing, Midwifery, Medical Laboratory Technology</p></div>
-    </div>
-</section>
+
 <footer class="footer" id="contact">
     <div class="footer-links">
-        <a href="#home">Home</a><a href="#features">Features</a><a href="#about">About</a><a href="#" onclick="openContactModal()">Contact</a><a href="#" onclick="openLoginModal()">Student Login</a><a href="admin.html">Staff Login</a>
+        <a href="#home">Home</a><a href="#features">Features</a><a href="#about">About</a>
+        <a href="#" onclick="openLoginModal()">Student Login</a><a href="admin.html">Staff Login</a>
     </div>
-    <div class="social-icons">
-        <a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a>
-    </div>
-    <div><p><i class="fas fa-phone"></i> +233 20 445 8182</p><p><i class="fas fa-envelope"></i> info@centralcollegegh.com</p><p><i class="fas fa-map-marker-alt"></i> Agona Swedru, Ghana</p></div>
+    <div><p><i class="fas fa-phone"></i> +233 20 445 8182</p><p><i class="fas fa-envelope"></i> info@centralcollegegh.com</p></div>
     <hr style="margin:20px 0;border-color:rgba(255,255,255,0.1)">
     <p>&copy; 2026 Central College of Science and Technology. All rights reserved.</p>
 </footer>
+
 <div class="modal" id="authModal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div class="modal-header"><div class="logo-icon" style="margin:0 auto 15px"><i class="fas fa-graduation-cap"></i></div><h2 id="modalTitle">Student Login</h2><p id="modalSubtitle">Access your student portal</p></div>
+        <div class="modal-header"><div class="logo-icon" style="margin:0 auto 15px"><i class="fas fa-graduation-cap"></i></div><h2 id="modalTitle">Student Login</h2></div>
         <div id="alertMessage" class="alert"></div>
         <div id="loginForm">
-            <div class="input-group"><label><i class="fas fa-id-card"></i> Student ID</label><input type="text" id="studentId" placeholder="e.g., CCST/RM/24/001"></div>
-            <div class="input-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="password" placeholder="Enter your password"></div>
-            <button class="modal-btn" id="loginBtn" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login</button>
-            <div class="toggle-form"><a onclick="showRegister()">Don't have an account? Register here</a></div>
+            <div class="input-group"><label>Student ID</label><input type="text" id="studentId" placeholder="e.g., CCST/RM/24/001"></div>
+            <div class="input-group"><label>Password</label><input type="password" id="password" placeholder="Enter your password"></div>
+            <button class="modal-btn" onclick="login()">Login</button>
+            <div class="toggle-form" style="text-align:center; margin-top:15px;"><a onclick="showRegister()" style="cursor:pointer; color:var(--primary);">Don't have an account? Register here</a></div>
         </div>
         <div id="registerForm" style="display:none">
-            <div class="input-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="regName" placeholder="Enter your full name"></div>
-            <div class="input-group"><label><i class="fas fa-id-card"></i> Student ID</label><input type="text" id="regId" placeholder="e.g., CCST/RM/24/001"><small style="color:#666">Format: CCST/Program/Year/Number</small></div>
-            <div class="input-group"><label><i class="fas fa-graduation-cap"></i> Program</label><select id="regProgram"><option value="">Select Program</option><option value="RM">Registered Midwifery (RM)</option><option value="RN">Registered General Nursing (RN)</option><option value="ML">Medical Laboratory Technology (ML)</option></select></div>
-            <div class="input-group"><label><i class="fas fa-layer-group"></i> Level</label><select id="regLevel"><option value="">Select Level</option><option value="100">Level 100</option><option value="200">Level 200</option><option value="300">Level 300</option></select></div>
-            <div class="input-group"><label><i class="fas fa-envelope"></i> Email (Optional)</label><input type="email" id="regEmail" placeholder="your.email@example.com"></div>
-            <div class="input-group"><label><i class="fas fa-phone"></i> Phone (Optional)</label><input type="tel" id="regPhone" placeholder="024XXXXXXX"></div>
-            <div class="input-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="regPassword" placeholder="Create a password (min 4 characters)"></div>
-            <div class="input-group"><label><i class="fas fa-lock"></i> Confirm Password</label><input type="password" id="regConfirmPassword" placeholder="Confirm your password"></div>
-            <button class="modal-btn" id="registerBtn" onclick="register()"><i class="fas fa-user-plus"></i> Register</button>
-            <div class="toggle-form"><a onclick="showLogin()">Already have an account? Login here</a></div>
+            <div class="input-group"><label>Full Name</label><input type="text" id="regName" placeholder="Enter your full name"></div>
+            <div class="input-group"><label>Student ID</label><input type="text" id="regId" placeholder="e.g., CCST/RM/24/001"></div>
+            <div class="input-group"><label>Program</label><select id="regProgram"><option value="">Select Program</option><option value="RM">Registered Midwifery (RM)</option><option value="RN">Registered General Nursing (RN)</option><option value="ML">Medical Laboratory Technology (ML)</option></select></div>
+            <div class="input-group"><label>Level</label><select id="regLevel"><option value="">Select Level</option><option value="100">Level 100</option><option value="200">Level 200</option><option value="300">Level 300</option></select></div>
+            <div class="input-group"><label>Password</label><input type="password" id="regPassword" placeholder="Create a password"></div>
+            <div class="input-group"><label>Confirm Password</label><input type="password" id="regConfirmPassword" placeholder="Confirm your password"></div>
+            <button class="modal-btn" onclick="register()">Register</button>
+            <div class="toggle-form" style="text-align:center; margin-top:15px;"><a onclick="showLogin()" style="cursor:pointer; color:var(--primary);">Already have an account? Login here</a></div>
         </div>
-        <div class="modal-footer"><a onclick="showForgotPassword()">Forgot Password?</a></div>
     </div>
 </div>
-<div class="modal" id="contactModal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeContactModal()">&times;</span>
-        <div class="modal-header"><div class="logo-icon" style="margin:0 auto 15px"><i class="fas fa-envelope"></i></div><h2>Contact Us</h2></div>
-        <div class="input-group"><label>Your Name</label><input type="text" id="contactName" placeholder="Enter your name"></div>
-        <div class="input-group"><label>Email Address</label><input type="email" id="contactEmail" placeholder="Enter your email"></div>
-        <div class="input-group"><label>Message</label><textarea id="contactMessage" rows="4" placeholder="Type your message here..." style="width:100%;padding:12px;border-radius:12px;border:2px solid #e0e0e0"></textarea></div>
-        <button class="modal-btn" onclick="sendContactMessage()">Send Message</button>
-    </div>
-</div>
-<script>
-const API_KEY = "CCST-SECURE-KEY-2026-12345";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjb_bfx6vILmFp5An1dvtVyiSTup_4N8LQtVk3srnRaQpUvA_55K9DFGjM4DawXn1V/exec";
 
-function openLoginModal() { document.getElementById('modalTitle').innerText='Student Login'; document.getElementById('modalSubtitle').innerText='Access your student portal'; document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
-function openRegisterModal() { document.getElementById('modalTitle').innerText='Student Registration'; document.getElementById('modalSubtitle').innerText='Create your account'; document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
-function showRegister() { document.getElementById('modalTitle').innerText='Student Registration'; document.getElementById('modalSubtitle').innerText='Create your account'; document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; clearAlert(); }
-function showLogin() { document.getElementById('modalTitle').innerText='Student Login'; document.getElementById('modalSubtitle').innerText='Access your student portal'; document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; clearAlert(); }
-function closeModal() { document.getElementById('authModal').classList.remove('show'); clearAlert(); document.getElementById('studentId').value=''; document.getElementById('password').value=''; document.getElementById('regName').value=''; document.getElementById('regId').value=''; document.getElementById('regProgram').value=''; document.getElementById('regLevel').value=''; document.getElementById('regEmail').value=''; document.getElementById('regPhone').value=''; document.getElementById('regPassword').value=''; document.getElementById('regConfirmPassword').value=''; }
-function openContactModal() { document.getElementById('contactModal').classList.add('show'); }
-function closeContactModal() { document.getElementById('contactModal').classList.remove('show'); document.getElementById('contactName').value=''; document.getElementById('contactEmail').value=''; document.getElementById('contactMessage').value=''; }
-function showAlert(message,type) { const d=document.getElementById('alertMessage'); d.textContent=message; d.className='alert '+type; d.style.display='block'; setTimeout(()=>{d.style.display='none';},5000); }
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymLg4cDjEMGNRAR3mfSk54bcvDaG2sb56HfiRRoozs3ZW1A1gEsj8RI595HrW9ItkqtQ/exec"; // Replace with your deployed Google Apps Script URL
+const API_KEY = "CCST-SECURE-KEY-2026-12345";
+
+function openLoginModal() { document.getElementById('modalTitle').innerText='Student Login'; document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
+function openRegisterModal() { document.getElementById('modalTitle').innerText='Student Registration'; document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
+function showRegister() { document.getElementById('modalTitle').innerText='Student Registration'; document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; clearAlert(); }
+function showLogin() { document.getElementById('modalTitle').innerText='Student Login'; document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; clearAlert(); }
+function closeModal() { document.getElementById('authModal').classList.remove('show'); clearAlert(); }
+function showAlert(message, type) { const d=document.getElementById('alertMessage'); d.textContent=message; d.className='alert '+type; d.style.display='block'; setTimeout(()=>{d.style.display='none';},5000); }
 function clearAlert() { const d=document.getElementById('alertMessage'); d.style.display='none'; d.className='alert'; }
 
 async function register() {
-    const name=document.getElementById('regName').value.trim(); const id=document.getElementById('regId').value.trim();
-    const program=document.getElementById('regProgram').value; const level=document.getElementById('regLevel').value;
-    const email=document.getElementById('regEmail').value.trim(); const phone=document.getElementById('regPhone').value.trim();
-    const password=document.getElementById('regPassword').value; const confirmPassword=document.getElementById('regConfirmPassword').value;
+    const name=document.getElementById('regName').value.trim();
+    const id=document.getElementById('regId').value.trim();
+    const program=document.getElementById('regProgram').value;
+    const level=document.getElementById('regLevel').value;
+    const password=document.getElementById('regPassword').value;
+    const confirmPassword=document.getElementById('regConfirmPassword').value;
+    
     if(!name||!id||!program||!level||!password) { showAlert('Please fill in all required fields','error'); return; }
     if(password!==confirmPassword) { showAlert('Passwords do not match','error'); return; }
     if(password.length<4) { showAlert('Password must be at least 4 characters','error'); return; }
-    const idPattern=/^CCST\/(RM|RN|ML)\/\d{2}\/\d{3}$/;
-    if(!idPattern.test(id)) { showAlert('Invalid Student ID format. Use: CCST/RM/24/001','error'); return; }
-    const btn=document.getElementById('registerBtn'); const originalText=btn.innerHTML;
-    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Registering...';
+    
     try {
-        const payload = {
-            action: 'register',
-            api_key: API_KEY,
-            name: name,
-            id: id,
-            program: program,
-            level: level,
-            password: password,
-            email: email,
-            phone: phone
-        };
-        console.log('Sending registration payload:', payload);
         const response=await fetch(SCRIPT_URL,{
             method:'POST',
-            mode:'cors',
             headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
+            body:JSON.stringify({ action:'register', api_key:API_KEY, name, id, program, level, password })
         });
-        if(!response.ok) throw new Error('HTTP error: '+response.status);
         const data=await response.json();
-        console.log('Registration response:', data);
         if(data.success) { showAlert('Registration successful! Please login.','success'); setTimeout(()=>{showLogin();document.getElementById('studentId').value=id;},2000); }
-        else if(data.error && data.error.includes('already exists')) { showAlert('This Student ID is already registered. Please login instead.','error'); }
-        else if(data.error === 'Unauthorized') { showAlert('Server error. Please try again later.','error'); }
-        else { showAlert(data.error||data.message||'Registration failed. Please try again.','error'); }
+        else { showAlert(data.error||'Registration failed','error'); }
     } catch(error) { showAlert('Network error: '+error.message,'error'); }
-    finally { btn.disabled=false; btn.innerHTML=originalText; }
 }
 
 async function login() {
-    const studentId=document.getElementById('studentId').value.trim(); const password=document.getElementById('password').value;
+    const studentId=document.getElementById('studentId').value.trim();
+    const password=document.getElementById('password').value;
     if(!studentId||!password) { showAlert('Please enter Student ID and Password','error'); return; }
-    const btn=document.getElementById('loginBtn'); const originalText=btn.innerHTML;
-    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Logging in...';
+    
     try {
-        const payload = {
-            action: 'student_login',
-            api_key: API_KEY,
-            id: studentId,
-            password: password
-        };
-        console.log('Sending login payload:', payload);
         const response=await fetch(SCRIPT_URL,{
             method:'POST',
-            mode:'cors',
             headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
+            body:JSON.stringify({ action:'student_login', api_key:API_KEY, id:studentId, password })
         });
-        if(!response.ok) throw new Error('HTTP error: '+response.status);
         const data=await response.json();
-        console.log('Login response:', data);
-        if(data.success) { localStorage.setItem('userData',JSON.stringify(data)); localStorage.setItem('studentId',studentId); showAlert('Login successful! Redirecting...','success'); setTimeout(()=>{window.location.href='dashboard.html';},1500); }
-        else if(data.error==='STUDENT_NOT_FOUND') { showAlert('Student ID not found. Please register first.','error'); }
-        else if(data.error==='WRONG_PASSWORD') { showAlert('Incorrect password. Please try again.','error'); }
-        else if(data.error==='ACCOUNT_INACTIVE') { showAlert('Account is deactivated. Contact admin.','error'); }
-        else { showAlert(data.message||'Login failed. Please try again.','error'); }
+        if(data.success) {
+            localStorage.setItem('userData',JSON.stringify(data));
+            localStorage.setItem('studentId',studentId);
+            showAlert('Login successful! Redirecting...','success');
+            setTimeout(()=>{window.location.href='dashboard.html';},1500);
+        } else { showAlert(data.error||'Login failed','error'); }
     } catch(error) { showAlert('Network error: '+error.message,'error'); }
-    finally { btn.disabled=false; btn.innerHTML=originalText; }
 }
-
-function showForgotPassword() { showAlert('Please contact the IT department at +233 20 445 8182 for password reset assistance.','info'); }
-function sendContactMessage() { const name=document.getElementById('contactName').value; const email=document.getElementById('contactEmail').value; const message=document.getElementById('contactMessage').value; if(!name||!email||!message) { alert('Please fill all fields'); return; } alert('Thank you! Your message has been sent.'); closeContactModal(); }
-window.onclick=function(event) { const modal=document.getElementById('authModal'); const contactModal=document.getElementById('contactModal'); if(event.target===modal) closeModal(); if(event.target===contactModal) closeContactModal(); }
-document.getElementById('studentId')?.addEventListener('keypress',(e)=>{if(e.key==='Enter')login();});
-document.getElementById('password')?.addEventListener('keypress',(e)=>{if(e.key==='Enter')login();});
-</script>
-
-<script>
-/**
- * Iframe 元素高亮注入脚本
- * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
- *
- * 使用方法：
- * 1. 将此脚本添加到目标网站的 HTML 中
- * 2. 或通过浏览器扩展、用户脚本等方式注入
- */
-
-(function () {
-  "use strict";
-
-  // 检查是否在 iframe 中
-  if (window.self === window.top) {
-    return; // 不在 iframe 中，不执行
-  }
-
-  // 检查是否已经初始化过
-  if (window.__iframeHighlightInitialized) {
-    return;
-  }
-  window.__iframeHighlightInitialized = true;
-  console.log("Iframe 高亮脚本已加载");
-
-  // 创建高亮覆盖层
-  var overlay = document.createElement("div");
-  overlay.id = "iframe-highlight-overlay";
-  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
-
-  // 创建悬停高亮框（虚线边框）
-  var highlightBox = document.createElement("div");
-  highlightBox.id = "iframe-highlight-box";
-  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
-
-  // 创建选中节点的常驻高亮框（实线边框）
-  var selectedBox = document.createElement("div");
-  selectedBox.id = "iframe-selected-box";
-  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
-
-  // 创建悬停标签显示
-  var tagLabel = document.createElement("div");
-  tagLabel.id = "iframe-tag-label";
-  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
-
-  // 创建选中节点标签
-  var selectedLabel = document.createElement("div");
-  selectedLabel.id = "iframe-selected-label";
-  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
-  overlay.appendChild(highlightBox);
-  overlay.appendChild(selectedBox);
-  overlay.appendChild(tagLabel);
-  overlay.appendChild(selectedLabel);
-  document.body.appendChild(overlay);
-
-  // 存储当前选中的元素
-  var selectedElement = null;
-  var highlightEnabled = false;
-
-  // 更新选中元素的高亮显示
-  function updateSelectedHighlight(element) {
-    console.log("updateSelectedHighlight called with:", element);
-    if (!element) {
-      selectedBox.style.display = "none";
-      selectedLabel.style.display = "none";
-      selectedElement = null;
-      console.log("Cleared selected highlight");
-      return;
-    }
-    selectedElement = element;
-    var rect = element.getBoundingClientRect();
-    console.log("Selected element rect:", rect);
-
-    // 更新选中高亮框位置
-    selectedBox.style.display = "block";
-    selectedBox.style.left = "".concat(rect.left - 2, "px");
-    selectedBox.style.top = "".concat(rect.top - 2, "px");
-    selectedBox.style.width = "".concat(rect.width + 4, "px");
-    selectedBox.style.height = "".concat(rect.height + 4, "px");
-
-    // 更新选中标签位置和内容
-    selectedLabel.style.display = "block";
-    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
-
-    // 计算标签位置，确保不超出视窗
-    var labelTop = rect.top - 28;
-    var labelLeft = rect.left;
-
-    // 如果标签会超出顶部，显示在元素下方
-    if (labelTop < 5) {
-      labelTop = rect.bottom + 5;
-    }
-
-    // 如果标签会超出右侧，向左调整
-    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
-    if (labelLeft + labelWidth > window.innerWidth - 10) {
-      labelLeft = window.innerWidth - labelWidth - 10;
-    }
-    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
-    selectedLabel.style.top = "".concat(labelTop, "px");
-    console.log("Selected highlight positioned at:", {
-      left: selectedBox.style.left,
-      top: selectedBox.style.top,
-      width: selectedBox.style.width,
-      height: selectedBox.style.height
-    });
-  }
-  function getElementSelector(element) {
-    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
-    var segments = [];
-    var current = element;
-    while (current !== document.documentElement) {
-      var selector = '';
-      // 优先检查唯一ID
-      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
-        segments.unshift("#".concat(current.id));
-        break; // ID唯一，无需继续向上
-      }
-
-      // 生成类名选择器（取第一个有效类名）
-      var classes = Array.from(current.classList).filter(function (c) {
-        return !c.startsWith('js-');
-      });
-      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
-
-      // 生成位置索引（nth-child）
-      var tag = current.tagName.toLowerCase();
-      if (!className) {
-        var siblings = Array.from(current.parentNode.children);
-        var index = siblings.findIndex(function (el) {
-          return el === current;
-        }) + 1;
-        selector = "".concat(tag, ":nth-child(").concat(index, ")");
-      } else {
-        selector = className;
-      }
-      segments.unshift(selector);
-      current = current.parentElement;
-    }
-
-    // 处理根元素
-    if (current === document.documentElement) {
-      segments.unshift('html');
-    }
-    return segments.join(' > ');
-  }
-
-  // 获取元素文本内容
-  function getElementText(element) {
-    var _element$textContent;
-    if (element.tagName === "INPUT") {
-      return element.value || element.placeholder || "";
-    }
-    if (element.tagName === "TEXTAREA") {
-      return element.value || element.placeholder || "";
-    }
-    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
-    return text.length > 50 ? text.substring(0, 50) + "..." : text;
-  }
-
-  // 获取元素属性信息
-  function getElementAttributes(element) {
-    var attrs = {};
-    for (var i = 0; i < element.attributes.length; i++) {
-      var attr = element.attributes[i];
-      attrs[attr.name] = attr.value;
-    }
-    return attrs;
-  }
-
-  // 鼠标悬停事件处理
-  function handleMouseOver(e) {
-    if (!highlightEnabled) return;
-    var target = e.target;
-    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
-      return;
-    }
-
-    // 避免高亮 html 和 body 元素
-    if (target === document.documentElement || target === document.body) {
-      return;
-    }
-
-    // 如果是已选中的元素，不显示悬停高亮
-    if (target === selectedElement) {
-      highlightBox.style.display = "none";
-      tagLabel.style.display = "none";
-      return;
-    }
-    var rect = target.getBoundingClientRect();
-    var selector = getElementSelector(target);
-    var text = getElementText(target);
-    var attributes = getElementAttributes(target);
-
-    // 更新悬停高亮框位置
-    highlightBox.style.display = "block";
-    highlightBox.style.left = "".concat(rect.left - 2, "px");
-    highlightBox.style.top = "".concat(rect.top - 2, "px");
-    highlightBox.style.width = "".concat(rect.width + 4, "px");
-    highlightBox.style.height = "".concat(rect.height + 4, "px");
-
-    // 更新标签位置和内容
-    tagLabel.style.display = "block";
-    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
-
-    // 计算标签位置，确保不超出视窗
-    var labelTop = rect.top - 22;
-    var labelLeft = rect.left;
-
-    // 如果标签会超出顶部，显示在元素下方
-    if (labelTop < 0) {
-      labelTop = rect.bottom + 5;
-    }
-
-    // 如果标签会超出右侧，向左调整
-    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
-      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
-    }
-    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
-    tagLabel.style.top = "".concat(labelTop, "px");
-
-    // 发送消息到父窗口
-    var elementInfo = {
-      tagName: target.tagName.toLowerCase(),
-      rect: {
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-        x: rect.x,
-        y: rect.y
-      },
-      selector: selector,
-      text: text,
-      attributes: attributes,
-      url: window.location.href,
-      path: window.location.pathname,
-      timestamp: Date.now()
-    };
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-hover",
-        data: elementInfo,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 鼠标离开事件处理
-  function handleMouseOut(e) {
-    if (!highlightEnabled) return;
-    var relatedTarget = e.relatedTarget;
-
-    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
-    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
-      return;
-    }
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-hover",
-        data: null,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 点击事件处理
-  function handleClick(e) {
-    var target = e.target;
-    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
-      return;
-    }
-
-    // 避免处理 html 和 body 元素
-    if (target === document.documentElement || target === document.body) {
-      return;
-    }
-
-    // 检查是否是交互元素，这些元素需要保留默认行为
-    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
-
-    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
-    if (highlightEnabled) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    var rect = target.getBoundingClientRect();
-    var selector = getElementSelector(target);
-    var text = getElementText(target);
-    var attributes = getElementAttributes(target);
-    console.log("Element clicked:", {
-      tagName: target.tagName,
-      selector: selector,
-      rect: rect
-    });
-
-    // 立即更新选中高亮
-    updateSelectedHighlight(target);
-
-    // 隐藏悬停高亮，因为现在是选中状态
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    var elementInfo = {
-      tagName: target.tagName.toLowerCase(),
-      rect: {
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-        x: rect.x,
-        y: rect.y
-      },
-      selector: selector,
-      text: text,
-      attributes: attributes,
-      url: window.location.href,
-      path: window.location.pathname,
-      timestamp: Date.now()
-    };
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-click",
-        data: elementInfo,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 监听来自父窗口的消息
-  function handleParentMessage(event) {
-    console.log("Received message from parent:", event.data);
-    if (event.data.type === "iframe-highlight-toggle") {
-      var enabled = event.data.enabled;
-      console.log("Highlight toggle:", enabled);
-      if (enabled) {
-        enableHighlight();
-      } else {
-        disableHighlight();
-      }
-    } else if (event.data.type === "enable-iframe-highlight") {
-      console.log("Enable iframe highlight");
-      enableHighlight();
-    } else if (event.data.type === "disable-iframe-highlight") {
-      console.log("Disable iframe highlight");
-      disableHighlight();
-    } else if (event.data.type === "toggle-iframe-highlight") {
-      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
-      console.log("Toggle iframe highlight to:", _enabled);
-      if (_enabled) {
-        enableHighlight();
-      } else {
-        disableHighlight();
-      }
-    } else if (event.data.type === "update-selected-element") {
-      var selector = event.data.selector;
-      console.log("Update selected element with selector:", selector);
-      if (selector) {
-        try {
-          var element = document.querySelector(selector);
-          console.log("Found element by selector:", element);
-          updateSelectedHighlight(element);
-        } catch (error) {
-          console.warn("Failed to select element:", error);
-          updateSelectedHighlight(null);
-        }
-      } else {
-        updateSelectedHighlight(null);
-      }
-    } else if (event.data.type === "clear-selected-element") {
-      console.log("Clear selected element");
-      updateSelectedHighlight(null);
-    }
-  }
-
-  // 启用高亮功能
-  function enableHighlight() {
-    console.log("Enabling highlight");
-    document.addEventListener("mouseover", handleMouseOver, true);
-    document.addEventListener("mouseout", handleMouseOut, true);
-    document.addEventListener("click", handleClick, true);
-    highlightEnabled = true;
-    overlay.style.display = "block";
-  }
-
-  // 禁用高亮功能
-  function disableHighlight() {
-    console.log("Disabling highlight");
-    highlightEnabled = false;
-    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
-    // 这样可以保留选中状态的显示
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
-  }
-
-  // 完全禁用高亮功能（移除所有监听器）
-  function fullyDisableHighlight() {
-    console.log("Fully disabling highlight");
-    highlightEnabled = false;
-    document.removeEventListener("mouseover", handleMouseOver, true);
-    document.removeEventListener("mouseout", handleMouseOut, true);
-    document.removeEventListener("click", handleClick, true);
-    overlay.style.display = "none";
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    selectedBox.style.display = "none";
-    selectedLabel.style.display = "none";
-  }
-
-  // 添加事件监听
-  enableHighlight();
-  window.addEventListener("message", handleParentMessage);
-
-  // 暴露全局函数供外部调用
-  window.__iframeHighlightControl = {
-    enable: enableHighlight,
-    disable: disableHighlight,
-    fullyDisable: fullyDisableHighlight,
-    isEnabled: function isEnabled() {
-      return highlightEnabled;
-    },
-    getSelectedElement: function getSelectedElement() {
-      return selectedElement;
-    },
-    updateSelected: updateSelectedHighlight,
-    // 通过消息发送开关控制
-    sendToggleMessage: function sendToggleMessage(enabled) {
-      window.parent.postMessage({
-        type: 'iframe-highlight-status',
-        enabled: enabled || highlightEnabled,
-        source: 'iframe-highlight-injector'
-      }, '*');
-    }
-  };
-
-  // 通知父窗口脚本已加载
-  try {
-    window.parent.postMessage({
-      type: "iframe-highlight-ready",
-      data: {
-        url: window.location.href,
-        userAgent: navigator.userAgent,
-        timestamp: Date.now()
-      },
-      source: "iframe-highlight-injector"
-    }, "*");
-  } catch (error) {
-    console.warn("无法发送就绪消息到父窗口:", error);
-  }
-
-  // 清理函数
-  window.__iframeHighlightCleanup = function () {
-    fullyDisableHighlight();
-    window.removeEventListener("message", handleParentMessage);
-    if (overlay.parentElement) {
-      overlay.parentElement.removeChild(overlay);
-    }
-    delete window.__iframeHighlightInitialized;
-    delete window.__iframeHighlightCleanup;
-  };
-})();
-
-</script>
-
-<script>
-/**
- * Iframe 元素高亮注入脚本
- * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
- *
- * 使用方法：
- * 1. 将此脚本添加到目标网站的 HTML 中
- * 2. 或通过浏览器扩展、用户脚本等方式注入
- */
-
-(function () {
-  "use strict";
-
-  // 检查是否在 iframe 中
-  if (window.self === window.top) {
-    return; // 不在 iframe 中，不执行
-  }
-
-  // 检查是否已经初始化过
-  if (window.__iframeHighlightInitialized) {
-    return;
-  }
-  window.__iframeHighlightInitialized = true;
-  console.log("Iframe 高亮脚本已加载");
-
-  // 创建高亮覆盖层
-  var overlay = document.createElement("div");
-  overlay.id = "iframe-highlight-overlay";
-  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
-
-  // 创建悬停高亮框（虚线边框）
-  var highlightBox = document.createElement("div");
-  highlightBox.id = "iframe-highlight-box";
-  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
-
-  // 创建选中节点的常驻高亮框（实线边框）
-  var selectedBox = document.createElement("div");
-  selectedBox.id = "iframe-selected-box";
-  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
-
-  // 创建悬停标签显示
-  var tagLabel = document.createElement("div");
-  tagLabel.id = "iframe-tag-label";
-  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
-
-  // 创建选中节点标签
-  var selectedLabel = document.createElement("div");
-  selectedLabel.id = "iframe-selected-label";
-  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
-  overlay.appendChild(highlightBox);
-  overlay.appendChild(selectedBox);
-  overlay.appendChild(tagLabel);
-  overlay.appendChild(selectedLabel);
-  document.body.appendChild(overlay);
-
-  // 存储当前选中的元素
-  var selectedElement = null;
-  var highlightEnabled = false;
-
-  // 更新选中元素的高亮显示
-  function updateSelectedHighlight(element) {
-    console.log("updateSelectedHighlight called with:", element);
-    if (!element) {
-      selectedBox.style.display = "none";
-      selectedLabel.style.display = "none";
-      selectedElement = null;
-      console.log("Cleared selected highlight");
-      return;
-    }
-    selectedElement = element;
-    var rect = element.getBoundingClientRect();
-    console.log("Selected element rect:", rect);
-
-    // 更新选中高亮框位置
-    selectedBox.style.display = "block";
-    selectedBox.style.left = "".concat(rect.left - 2, "px");
-    selectedBox.style.top = "".concat(rect.top - 2, "px");
-    selectedBox.style.width = "".concat(rect.width + 4, "px");
-    selectedBox.style.height = "".concat(rect.height + 4, "px");
-
-    // 更新选中标签位置和内容
-    selectedLabel.style.display = "block";
-    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
-
-    // 计算标签位置，确保不超出视窗
-    var labelTop = rect.top - 28;
-    var labelLeft = rect.left;
-
-    // 如果标签会超出顶部，显示在元素下方
-    if (labelTop < 5) {
-      labelTop = rect.bottom + 5;
-    }
-
-    // 如果标签会超出右侧，向左调整
-    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
-    if (labelLeft + labelWidth > window.innerWidth - 10) {
-      labelLeft = window.innerWidth - labelWidth - 10;
-    }
-    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
-    selectedLabel.style.top = "".concat(labelTop, "px");
-    console.log("Selected highlight positioned at:", {
-      left: selectedBox.style.left,
-      top: selectedBox.style.top,
-      width: selectedBox.style.width,
-      height: selectedBox.style.height
-    });
-  }
-  function getElementSelector(element) {
-    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
-    var segments = [];
-    var current = element;
-    while (current !== document.documentElement) {
-      var selector = '';
-      // 优先检查唯一ID
-      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
-        segments.unshift("#".concat(current.id));
-        break; // ID唯一，无需继续向上
-      }
-
-      // 生成类名选择器（取第一个有效类名）
-      var classes = Array.from(current.classList).filter(function (c) {
-        return !c.startsWith('js-');
-      });
-      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
-
-      // 生成位置索引（nth-child）
-      var tag = current.tagName.toLowerCase();
-      if (!className) {
-        var siblings = Array.from(current.parentNode.children);
-        var index = siblings.findIndex(function (el) {
-          return el === current;
-        }) + 1;
-        selector = "".concat(tag, ":nth-child(").concat(index, ")");
-      } else {
-        selector = className;
-      }
-      segments.unshift(selector);
-      current = current.parentElement;
-    }
-
-    // 处理根元素
-    if (current === document.documentElement) {
-      segments.unshift('html');
-    }
-    return segments.join(' > ');
-  }
-
-  // 获取元素文本内容
-  function getElementText(element) {
-    var _element$textContent;
-    if (element.tagName === "INPUT") {
-      return element.value || element.placeholder || "";
-    }
-    if (element.tagName === "TEXTAREA") {
-      return element.value || element.placeholder || "";
-    }
-    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
-    return text.length > 50 ? text.substring(0, 50) + "..." : text;
-  }
-
-  // 获取元素属性信息
-  function getElementAttributes(element) {
-    var attrs = {};
-    for (var i = 0; i < element.attributes.length; i++) {
-      var attr = element.attributes[i];
-      attrs[attr.name] = attr.value;
-    }
-    return attrs;
-  }
-
-  // 鼠标悬停事件处理
-  function handleMouseOver(e) {
-    if (!highlightEnabled) return;
-    var target = e.target;
-    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
-      return;
-    }
-
-    // 避免高亮 html 和 body 元素
-    if (target === document.documentElement || target === document.body) {
-      return;
-    }
-
-    // 如果是已选中的元素，不显示悬停高亮
-    if (target === selectedElement) {
-      highlightBox.style.display = "none";
-      tagLabel.style.display = "none";
-      return;
-    }
-    var rect = target.getBoundingClientRect();
-    var selector = getElementSelector(target);
-    var text = getElementText(target);
-    var attributes = getElementAttributes(target);
-
-    // 更新悬停高亮框位置
-    highlightBox.style.display = "block";
-    highlightBox.style.left = "".concat(rect.left - 2, "px");
-    highlightBox.style.top = "".concat(rect.top - 2, "px");
-    highlightBox.style.width = "".concat(rect.width + 4, "px");
-    highlightBox.style.height = "".concat(rect.height + 4, "px");
-
-    // 更新标签位置和内容
-    tagLabel.style.display = "block";
-    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
-
-    // 计算标签位置，确保不超出视窗
-    var labelTop = rect.top - 22;
-    var labelLeft = rect.left;
-
-    // 如果标签会超出顶部，显示在元素下方
-    if (labelTop < 0) {
-      labelTop = rect.bottom + 5;
-    }
-
-    // 如果标签会超出右侧，向左调整
-    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
-      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
-    }
-    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
-    tagLabel.style.top = "".concat(labelTop, "px");
-
-    // 发送消息到父窗口
-    var elementInfo = {
-      tagName: target.tagName.toLowerCase(),
-      rect: {
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-        x: rect.x,
-        y: rect.y
-      },
-      selector: selector,
-      text: text,
-      attributes: attributes,
-      url: window.location.href,
-      path: window.location.pathname,
-      timestamp: Date.now()
-    };
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-hover",
-        data: elementInfo,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 鼠标离开事件处理
-  function handleMouseOut(e) {
-    if (!highlightEnabled) return;
-    var relatedTarget = e.relatedTarget;
-
-    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
-    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
-      return;
-    }
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-hover",
-        data: null,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 点击事件处理
-  function handleClick(e) {
-    var target = e.target;
-    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
-      return;
-    }
-
-    // 避免处理 html 和 body 元素
-    if (target === document.documentElement || target === document.body) {
-      return;
-    }
-
-    // 检查是否是交互元素，这些元素需要保留默认行为
-    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
-
-    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
-    if (highlightEnabled) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    var rect = target.getBoundingClientRect();
-    var selector = getElementSelector(target);
-    var text = getElementText(target);
-    var attributes = getElementAttributes(target);
-    console.log("Element clicked:", {
-      tagName: target.tagName,
-      selector: selector,
-      rect: rect
-    });
-
-    // 立即更新选中高亮
-    updateSelectedHighlight(target);
-
-    // 隐藏悬停高亮，因为现在是选中状态
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    var elementInfo = {
-      tagName: target.tagName.toLowerCase(),
-      rect: {
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-        x: rect.x,
-        y: rect.y
-      },
-      selector: selector,
-      text: text,
-      attributes: attributes,
-      url: window.location.href,
-      path: window.location.pathname,
-      timestamp: Date.now()
-    };
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-click",
-        data: elementInfo,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 监听来自父窗口的消息
-  function handleParentMessage(event) {
-    console.log("Received message from parent:", event.data);
-    if (event.data.type === "iframe-highlight-toggle") {
-      var enabled = event.data.enabled;
-      console.log("Highlight toggle:", enabled);
-      if (enabled) {
-        enableHighlight();
-      } else {
-        disableHighlight();
-      }
-    } else if (event.data.type === "enable-iframe-highlight") {
-      console.log("Enable iframe highlight");
-      enableHighlight();
-    } else if (event.data.type === "disable-iframe-highlight") {
-      console.log("Disable iframe highlight");
-      disableHighlight();
-    } else if (event.data.type === "toggle-iframe-highlight") {
-      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
-      console.log("Toggle iframe highlight to:", _enabled);
-      if (_enabled) {
-        enableHighlight();
-      } else {
-        disableHighlight();
-      }
-    } else if (event.data.type === "update-selected-element") {
-      var selector = event.data.selector;
-      console.log("Update selected element with selector:", selector);
-      if (selector) {
-        try {
-          var element = document.querySelector(selector);
-          console.log("Found element by selector:", element);
-          updateSelectedHighlight(element);
-        } catch (error) {
-          console.warn("Failed to select element:", error);
-          updateSelectedHighlight(null);
-        }
-      } else {
-        updateSelectedHighlight(null);
-      }
-    } else if (event.data.type === "clear-selected-element") {
-      console.log("Clear selected element");
-      updateSelectedHighlight(null);
-    }
-  }
-
-  // 启用高亮功能
-  function enableHighlight() {
-    console.log("Enabling highlight");
-    document.addEventListener("mouseover", handleMouseOver, true);
-    document.addEventListener("mouseout", handleMouseOut, true);
-    document.addEventListener("click", handleClick, true);
-    highlightEnabled = true;
-    overlay.style.display = "block";
-  }
-
-  // 禁用高亮功能
-  function disableHighlight() {
-    console.log("Disabling highlight");
-    highlightEnabled = false;
-    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
-    // 这样可以保留选中状态的显示
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
-  }
-
-  // 完全禁用高亮功能（移除所有监听器）
-  function fullyDisableHighlight() {
-    console.log("Fully disabling highlight");
-    highlightEnabled = false;
-    document.removeEventListener("mouseover", handleMouseOver, true);
-    document.removeEventListener("mouseout", handleMouseOut, true);
-    document.removeEventListener("click", handleClick, true);
-    overlay.style.display = "none";
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    selectedBox.style.display = "none";
-    selectedLabel.style.display = "none";
-  }
-
-  // 添加事件监听
-  enableHighlight();
-  window.addEventListener("message", handleParentMessage);
-
-  // 暴露全局函数供外部调用
-  window.__iframeHighlightControl = {
-    enable: enableHighlight,
-    disable: disableHighlight,
-    fullyDisable: fullyDisableHighlight,
-    isEnabled: function isEnabled() {
-      return highlightEnabled;
-    },
-    getSelectedElement: function getSelectedElement() {
-      return selectedElement;
-    },
-    updateSelected: updateSelectedHighlight,
-    // 通过消息发送开关控制
-    sendToggleMessage: function sendToggleMessage(enabled) {
-      window.parent.postMessage({
-        type: 'iframe-highlight-status',
-        enabled: enabled || highlightEnabled,
-        source: 'iframe-highlight-injector'
-      }, '*');
-    }
-  };
-
-  // 通知父窗口脚本已加载
-  try {
-    window.parent.postMessage({
-      type: "iframe-highlight-ready",
-      data: {
-        url: window.location.href,
-        userAgent: navigator.userAgent,
-        timestamp: Date.now()
-      },
-      source: "iframe-highlight-injector"
-    }, "*");
-  } catch (error) {
-    console.warn("无法发送就绪消息到父窗口:", error);
-  }
-
-  // 清理函数
-  window.__iframeHighlightCleanup = function () {
-    fullyDisableHighlight();
-    window.removeEventListener("message", handleParentMessage);
-    if (overlay.parentElement) {
-      overlay.parentElement.removeChild(overlay);
-    }
-    delete window.__iframeHighlightInitialized;
-    delete window.__iframeHighlightCleanup;
-  };
-})();
-
 </script>
 </body>
 </html>
