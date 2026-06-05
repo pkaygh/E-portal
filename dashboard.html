@@ -576,8 +576,9 @@
 <div id="toast" class="toast" style="display: none;"></div>
 
 <script>
-    const API_KEY = "CCST-SECURE-2026-MY-KEY-12345";
-
+    // --- CONFIG ---
+    // Must match the API_SECRET in your Apps Script project.
+    const API_KEY = "CCST-SECURE-KEY-2026-12345";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymLg4cDjEMGNRAR3mfSk54bcvDaG2sb56HfiRRoozs3ZW1A1gEsj8RI595HrW9ItkqtQ/exec";
     let studentData = null;
     let userResults = [];
@@ -870,9 +871,58 @@
     }
 
     function submitAttestationRequest() {
-        const purpose = document.getElementById('attestationPurpose').value;
-        const copies = document.getElementById('attestationCopies').value;
-        showToast(`Attestation request submitted for ${purpose} (${copies} copy/copies)`, "success");
+        // This is the BASIC form (loadRequestAttestation with just purpose/copies/instructions).
+        // The more detailed form (later in this file) defines a different submitAttestationRequest
+        // that overrides this one. So at runtime, the detailed version wins. We still keep this
+        // version intact in case the basic form is ever used standalone.
+        const purpose = document.getElementById('attestationPurpose')?.value;
+        const copies = document.getElementById('attestationCopies')?.value;
+        const instructions = document.getElementById('attestationInstructions')?.value || '';
+
+        if (!purpose || !copies) {
+            showToast("Please fill in all required fields", "error");
+            return;
+        }
+
+        const studentId = studentData?.profile?.id;
+        const studentName = studentData?.profile?.name;
+        const program = studentData?.profile?.program;
+        const fee = parseInt(copies) * 30;
+
+        // Try the backend, fall back to localStorage if it fails
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                action: 'submit_attestation_request',
+                api_key: API_KEY,
+                studentId: studentId,
+                name: studentName,
+                attestationType: 'General',
+                purpose: purpose,
+                copies: copies,
+                recipient: '',
+                notes: instructions,
+                fee: fee
+            })
+        }).then(res => res.json()).then(result => {
+            if (result.success) {
+                showToast(`Attestation request submitted! Fee: GH₵${fee}.`, "success");
+            } else {
+                // Save to localStorage as a fallback so the request isn't lost
+                saveAttestationLocally({ studentId, name: studentName, attestationType: 'General', purpose, copies, recipient: '', notes: instructions, fee, date: new Date().toLocaleString(), status: 'pending' });
+                showToast("Saved locally — backend error: " + (result.error || 'unknown'), "info");
+            }
+        }).catch(err => {
+            saveAttestationLocally({ studentId, name: studentName, attestationType: 'General', purpose, copies, recipient: '', notes: instructions, fee, date: new Date().toLocaleString(), status: 'pending' });
+            showToast("Saved locally (offline): " + err.message, "info");
+        });
+    }
+
+    function saveAttestationLocally(req) {
+        const all = JSON.parse(localStorage.getItem('attestationRequests') || '[]');
+        all.push({ id: 'AT-' + Date.now(), ...req });
+        localStorage.setItem('attestationRequests', JSON.stringify(all));
     }
 
     // ============================================
@@ -1026,8 +1076,53 @@
         ];
     }
 
-    function sendContactMessage() { showToast("Message sent! We'll get back to you soon.", "success"); }
-    function submitIssue() { showToast("Issue reported. Our team will investigate.", "success"); }
+    function sendContactMessage() {
+        const subject = document.getElementById('contactSubject')?.value.trim();
+        const message = document.getElementById('contactMessage')?.value.trim();
+        if (!subject || !message) {
+            showToast("Please enter both subject and message", "error");
+            return;
+        }
+        const studentId = studentData?.profile?.id || 'anonymous';
+        const name = studentData?.profile?.name || 'Anonymous';
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'submit_support_ticket', api_key: API_KEY, studentId, name, subject, message })
+        }).then(r => r.json()).then(result => {
+            if (result.success) {
+                showToast(`Message sent! Ticket: ${result.ticketId}. We'll get back to you soon.`, "success");
+                document.getElementById('contactSubject').value = '';
+                document.getElementById('contactMessage').value = '';
+            } else {
+                showToast("Failed: " + (result.error || 'unknown'), "error");
+            }
+        }).catch(err => showToast("Network error: " + err.message, "error"));
+    }
+
+    function submitIssue() {
+        const type = document.getElementById('issueType')?.value;
+        const description = document.getElementById('issueDescription')?.value.trim();
+        if (!description) {
+            showToast("Please describe the issue", "error");
+            return;
+        }
+        const subject = `[${type || 'general'}] Issue Report`;
+        const studentId = studentData?.profile?.id || 'anonymous';
+        const name = studentData?.profile?.name || 'Anonymous';
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'submit_support_ticket', api_key: API_KEY, studentId, name, subject, message: description })
+        }).then(r => r.json()).then(result => {
+            if (result.success) {
+                showToast(`Issue reported. Ticket: ${result.ticketId}. Our team will investigate.`, "success");
+                document.getElementById('issueDescription').value = '';
+            } else {
+                showToast("Failed: " + (result.error || 'unknown'), "error");
+            }
+        }).catch(err => showToast("Network error: " + err.message, "error"));
+    }
     function downloadIdCard() { showToast("ID Card download started", "success"); }
     function downloadReceipts() { showToast("Receipts download started", "success"); }
     function downloadTranscript() { showToast("Transcript download started", "success"); }
@@ -2372,38 +2467,55 @@ function submitTranscriptRequest() {
 }
 
 function submitAttestationRequest() {
+    // This is the DETAILED form (with attestationType, recipient, notes).
+    // It overrides the simpler version defined earlier in this file.
     const studentId = studentData?.profile?.id;
     const studentName = studentData?.profile?.name;
-    
-    const attestationType = document.getElementById('attestationType').value;
-    const purpose = document.getElementById('attestationPurpose').value;
-    const copies = document.getElementById('attestationCopies').value;
-    const recipient = document.getElementById('recipientName').value;
-    const notes = document.getElementById('attestationNotes').value;
-    
+
+    const attestationType = document.getElementById('attestationType')?.value;
+    const purpose = document.getElementById('attestationPurpose')?.value;
+    const copies = document.getElementById('attestationCopies')?.value;
+    const recipient = document.getElementById('recipientName')?.value || '';
+    const notes = document.getElementById('attestationNotes')?.value || '';
+
+    if (!attestationType || !purpose || !copies) {
+        showToast("Please fill in all required fields", "error");
+        return;
+    }
+
     const fee = parseInt(copies) * 30;
-    
-    const newRequest = {
-        id: 'AT-' + Date.now(),
-        studentId: studentId,
-        name: studentName,
-        attestationType: attestationType,
-        purpose: purpose,
-        copies: copies,
-        recipient: recipient,
-        notes: notes,
-        fee: fee,
-        date: new Date().toLocaleString(),
-        status: 'pending'
-    };
-    
-    // Save to localStorage
-    const allRequests = JSON.parse(localStorage.getItem('attestationRequests') || '[]');
-    allRequests.push(newRequest);
-    localStorage.setItem('attestationRequests', JSON.stringify(allRequests));
-    
-    showToast(`Attestation request submitted! Fee: GH₵${fee}. You will be notified when ready.`, "success");
-    loadRequestAttestation();
+
+    // Try the backend
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+            action: 'submit_attestation_request',
+            api_key: API_KEY,
+            studentId: studentId,
+            name: studentName,
+            attestationType: attestationType,
+            purpose: purpose,
+            copies: copies,
+            recipient: recipient,
+            notes: notes,
+            fee: fee
+        })
+    }).then(res => res.json()).then(result => {
+        if (result.success) {
+            // Also save locally for the history view
+            saveAttestationLocally({ studentId, name: studentName, attestationType, purpose, copies, recipient, notes, fee, date: new Date().toLocaleString(), status: 'pending' });
+            showToast(`Attestation request submitted! Fee: GH₵${fee}. You will be notified when ready.`, "success");
+        } else {
+            saveAttestationLocally({ studentId, name: studentName, attestationType, purpose, copies, recipient, notes, fee, date: new Date().toLocaleString(), status: 'pending' });
+            showToast("Saved locally — backend error: " + (result.error || 'unknown'), "info");
+        }
+        loadRequestAttestation();
+    }).catch(err => {
+        saveAttestationLocally({ studentId, name: studentName, attestationType, purpose, copies, recipient, notes, fee, date: new Date().toLocaleString(), status: 'pending' });
+        showToast("Saved locally (offline): " + err.message, "info");
+        loadRequestAttestation();
+    });
 }
 
 function cancelTranscriptRequest(requestId) {
@@ -4308,21 +4420,42 @@ function loadComingSoon() {
     window.onload = function() {
         const storedData = localStorage.getItem('userData');
         if (!storedData) {
+            // No session — bounce to login
             window.location.href = 'index.html';
             return;
         }
-        studentData = JSON.parse(storedData);
-        document.getElementById('sidebarName').innerText = studentData.profile.name || 'Student';
-        document.getElementById('studentNameHeader').innerText = studentData.profile.name || '';
+
+        try {
+            studentData = JSON.parse(storedData);
+        } catch (err) {
+            console.error('Corrupt userData in localStorage, clearing:', err);
+            localStorage.removeItem('userData');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Defensive: ensure profile exists, otherwise re-login
+        if (!studentData || !studentData.profile || !studentData.profile.id) {
+            localStorage.removeItem('userData');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const profile = studentData.profile;
+        document.getElementById('sidebarName').innerText = profile.name || 'Student';
+        document.getElementById('studentNameHeader').innerText = profile.name || '';
+        const details = `${profile.id} | ${getFullProgramName(profile.program)} | L${profile.level}`;
+        document.getElementById('sidebarDetails').innerText = details;
+
         // Load saved theme
-    loadSavedTheme();
-    
-    // Setup session timer
-    initSessionTimer();
-    setupActivityListener();
-    updateLastLogin();
-    
-    loadHomeContent();
+        loadSavedTheme();
+
+        // Setup session timer
+        initSessionTimer();
+        setupActivityListener();
+        updateLastLogin();
+
+        loadHomeContent();
     };
 
     function logout() {

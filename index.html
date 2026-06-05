@@ -131,7 +131,10 @@
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymLg4cDjEMGNRAR3mfSk54bcvDaG2sb56HfiRRoozs3ZW1A1gEsj8RI595HrW9ItkqtQ/exec"; // Replace with your deployed Google Apps Script URL
+// --- CONFIG ---
+// Replace SCRIPT_URL with your own deployed Google Apps Script /exec URL.
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzYN7wEhWKzOzRS0h7SYK4QEhJZEjqmj_nHMmYUWPhDgTWw7R54QZO4ifHGXaT6URQ/exec";
+// Must match the API_SECRET in your Apps Script project (Script Properties or default).
 const API_KEY = "CCST-SECURE-KEY-2026-12345";
 
 function openLoginModal() { document.getElementById('modalTitle').innerText='Student Login'; document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; document.getElementById('authModal').classList.add('show'); clearAlert(); }
@@ -157,7 +160,9 @@ async function register() {
     try {
         const response=await fetch(SCRIPT_URL,{
             method:'POST',
-            headers:{'Content-Type':'application/json'},
+            // text/plain avoids CORS preflight — Apps Script does not honor
+            // the OPTIONS preflight that 'application/json' would trigger.
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
             body:JSON.stringify({ action:'register', api_key:API_KEY, name, id, program, level, password })
         });
         const data=await response.json();
@@ -174,7 +179,8 @@ async function login() {
     try {
         const response=await fetch(SCRIPT_URL,{
             method:'POST',
-            headers:{'Content-Type':'application/json'},
+            // text/plain avoids CORS preflight — see note above.
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
             body:JSON.stringify({ action:'student_login', api_key:API_KEY, id:studentId, password })
         });
         const data=await response.json();

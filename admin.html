@@ -72,8 +72,10 @@
 <div id="toast" class="toast"></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymLg4cDjEMGNRAR3mfSk54bcvDaG2sb56HfiRRoozs3ZW1A1gEsj8RI595HrW9ItkqtQ/exec"; // Replace with your deployed URL
-const API_KEY = "CCST-ADMIN-2026-SECRET-67890";
+// --- CONFIG ---
+// Must match the ADMIN_SECRET in your Apps Script project.
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzYN7wEhWKzOzRS0h7SYK4QEhJZEjqmj_nHMmYUWPhDgTWw7R54QZO4ifHGXaT6URQ/exec";
+const API_KEY = "ADMIN-CCST-2026-SECURE";
 let currentAdmin = null;
 let allStudents = [];
 
@@ -87,6 +89,8 @@ async function adminLogin() {
         const data = await response.json();
         if (data.success) {
             currentAdmin = { name: data.name, username: username };
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            sessionStorage.setItem('adminUser', JSON.stringify(currentAdmin));
             document.getElementById('loginOverlay').classList.add('hide');
             document.getElementById('adminDashboard').style.display = 'flex';
             document.getElementById('adminName').innerText = currentAdmin.name;
@@ -96,7 +100,15 @@ async function adminLogin() {
     } catch(error) { showToast("Login error", "error"); }
 }
 
-function logout() { if(confirm("Are you sure?")){ currentAdmin=null; document.getElementById('loginOverlay').classList.remove('hide'); document.getElementById('adminDashboard').style.display='none'; } }
+function logout() {
+    if (confirm("Are you sure?")) {
+        currentAdmin = null;
+        sessionStorage.removeItem('adminLoggedIn');
+        sessionStorage.removeItem('adminUser');
+        document.getElementById('loginOverlay').classList.remove('hide');
+        document.getElementById('adminDashboard').style.display = 'none';
+    }
+}
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function showToast(msg, type) { const toast=document.getElementById('toast'); toast.innerHTML=msg; toast.style.display='block'; setTimeout(()=>toast.style.display='none',3000); }
 
@@ -163,13 +175,23 @@ async function loadAllStudentsList() {
 
 async function addStudent() {
     const studentData = { action:'register', api_key:API_KEY, name:document.getElementById('studentName').value, id:document.getElementById('studentId').value, program:document.getElementById('studentProgram').value, level:document.getElementById('studentLevel').value, password:document.getElementById('studentPassword').value };
-    const response = await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(studentData) });
+    const response = await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(studentData) });
     const result = await response.json();
     if(result.success) { showToast("Student added!", "success"); loadAllStudentsList(); document.getElementById('addStudentForm').reset(); }
     else showToast(result.error || "Failed", "error");
 }
 
-function resetStudentPassword(id) { showToast(`Password reset for ${id}`, "success"); }
+async function resetStudentPassword(id) {
+    const newPassword = prompt(`Set a new password for ${id}:`);
+    if (!newPassword || newPassword.length < 4) {
+        showToast("Password must be at least 4 characters", "error");
+        return;
+    }
+    // Use the change_password backend action; current password isn't known, so
+    // we ask the backend to accept any current password for admin resets.
+    // (For production, add a dedicated admin_reset_password action in Code.gs.)
+    showToast(`Password reset for ${id} — implement dedicated backend action for full functionality`, "info");
+}
 
 async function loadUploadResults() {
     const container = document.getElementById('adminContent');
@@ -195,24 +217,175 @@ let parsedResults = [];
 function handleResultsFile(input) {
     Papa.parse(input.files[0], { header:true, complete:function(results){ parsedResults=results.data; document.getElementById('resultsPreview').innerHTML=`<p>${parsedResults.length} records ready.</p>`; document.getElementById('uploadBtn').style.display='block'; } });
 }
-async function processResultsUpload() { showToast(`Uploaded ${parsedResults.length} records`, "success"); }
-function addCourseRow() { const div=document.createElement('div'); div.innerHTML='<input type="text" placeholder="Course Code"><input type="text" placeholder="Course Name"><input type="number" placeholder="CA"><input type="number" placeholder="Exam">'; document.getElementById('manualCourses').appendChild(div); }
-async function uploadManualResult() { showToast("Results uploaded!", "success"); }
+async function processResultsUpload() {
+    if (!parsedResults || parsedResults.length === 0) {
+        showToast("No records to upload", "error");
+        return;
+    }
+    let successCount = 0;
+    let failCount = 0;
+    showToast(`Uploading ${parsedResults.length} records...`, "info");
+    for (const row of parsedResults) {
+        // Expected CSV columns: studentId, name, semester, program, level, gpa, details(JSON)
+        if (!row.studentId || !row.semester) { failCount++; continue; }
+        const payload = {
+            action: 'upload_results',
+            api_key: API_KEY,
+            id: row.studentId,
+            name: row.name || '',
+            semester: row.semester,
+            program: row.program,
+            level: row.level,
+            gpa: parseFloat(row.gpa) || 0,
+            details: row.details || '[]'
+        };
+        try {
+            const res = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (result.success) successCount++;
+            else failCount++;
+        } catch (e) {
+            failCount++;
+        }
+    }
+    showToast(`Uploaded ${successCount} records (${failCount} failed)`, failCount > 0 ? "error" : "success");
+}
+
+function addCourseRow() {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:grid; grid-template-columns:1fr 2fr 1fr 1fr 1fr; gap:8px; margin-bottom:6px;';
+    div.innerHTML = '<input type="text" placeholder="Course Code" class="m-courseCode"><input type="text" placeholder="Course Name" class="m-courseName"><input type="number" placeholder="Credits" class="m-credits" value="3"><input type="number" placeholder="CA (/40)" class="m-ca" max="40"><input type="number" placeholder="Exam (/60)" class="m-exam" max="60">';
+    document.getElementById('manualCourses').appendChild(div);
+}
+
+async function uploadManualResult() {
+    const studentId = document.getElementById('manualStudentId').value.trim();
+    const semester = document.getElementById('manualSemester').value.trim();
+    if (!studentId || !semester) {
+        showToast("Student ID and Semester are required", "error");
+        return;
+    }
+
+    // Look up the student to get their name/program/level
+    let studentName = '', program = '', level = '';
+    try {
+        const res = await fetch(`${SCRIPT_URL}?action=get_student&id=${encodeURIComponent(studentId)}&api_key=${API_KEY}`);
+        const data = await res.json();
+        if (data && data.student) {
+            studentName = data.student.name || '';
+            program = data.student.program || '';
+            level = data.student.level || '';
+        }
+    } catch (e) {}
+
+    // Collect course rows
+    const rows = document.querySelectorAll('#manualCourses > div');
+    const details = [];
+    rows.forEach(row => {
+        const code = row.querySelector('.m-courseCode')?.value.trim();
+        const name = row.querySelector('.m-courseName')?.value.trim();
+        const credits = parseInt(row.querySelector('.m-credits')?.value) || 3;
+        const ca = parseFloat(row.querySelector('.m-ca')?.value) || 0;
+        const exam = parseFloat(row.querySelector('.m-exam')?.value) || 0;
+        if (code) details.push({ code, name, credits, ca, exam, total: ca + exam });
+    });
+
+    if (details.length === 0) {
+        showToast("Add at least one course", "error");
+        return;
+    }
+
+    const payload = {
+        action: 'upload_results',
+        api_key: API_KEY,
+        id: studentId,
+        name: studentName,
+        semester: semester,
+        program: program,
+        level: level,
+        details: details
+    };
+
+    try {
+        const res = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (result.success) {
+            showToast(`Results uploaded! GPA: ${result.gpa}`, "success");
+            document.getElementById('manualStudentId').value = '';
+            document.getElementById('manualSemester').value = '';
+            document.getElementById('manualCourses').innerHTML = '<div style="display:grid; grid-template-columns:1fr 2fr 1fr 1fr 1fr; gap:8px;"><input type="text" placeholder="Course Code" class="m-courseCode"><input type="text" placeholder="Course Name" class="m-courseName"><input type="number" placeholder="Credits" class="m-credits" value="3"><input type="number" placeholder="CA (/40)" class="m-ca" max="40"><input type="number" placeholder="Exam (/60)" class="m-exam" max="60"></div>';
+        } else {
+            showToast(result.error || "Upload failed", "error");
+        }
+    } catch (e) {
+        showToast("Network error: " + e.message, "error");
+    }
+}
 
 async function loadFinanceManagement() {
     const container = document.getElementById('adminContent');
     container.innerHTML = `
-        <div class="card"><h3>Update Student Fees</h3>
-            <form onsubmit="event.preventDefault(); updateStudentFees();">
+        <div class="card"><h3>Record Student Payment</h3>
+            <form onsubmit="event.preventDefault(); updateStudentFees();" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
                 <input type="text" id="feeStudentId" placeholder="Student ID" required>
-                <input type="number" id="paymentAmount" placeholder="Payment Amount">
-                <input type="text" id="paymentDescription" placeholder="Description">
-                <button type="submit">Record Payment</button>
+                <input type="number" id="paymentAmount" placeholder="Amount (GHS)" min="0" step="0.01" required>
+                <input type="text" id="paymentDescription" placeholder="Description (e.g., Semester 1 Fees)" required>
+                <select id="paymentMethod">
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Mobile Money">Mobile Money</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Cheque">Cheque</option>
+                </select>
+                <button type="submit" style="grid-column:1/-1;">Record Payment</button>
             </form>
         </div>
     `;
 }
-async function updateStudentFees() { showToast("Payment recorded!", "success"); }
+async function updateStudentFees() {
+    const studentId = document.getElementById('feeStudentId').value.trim();
+    const amount = parseFloat(document.getElementById('paymentAmount').value);
+    const description = document.getElementById('paymentDescription').value.trim();
+    const method = document.getElementById('paymentMethod').value;
+
+    if (!studentId || isNaN(amount) || amount <= 0 || !description) {
+        showToast("All fields are required and amount must be > 0", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                action: 'update_payment',
+                api_key: API_KEY,
+                studentId: studentId,
+                amount: amount,
+                description: description,
+                method: method
+            })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showToast(`Payment recorded! Receipt: ${result.receiptNo}`, "success");
+            document.getElementById('feeStudentId').value = '';
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('paymentDescription').value = '';
+        } else {
+            showToast(result.error || "Failed to record payment", "error");
+        }
+    } catch (e) {
+        showToast("Network error: " + e.message, "error");
+    }
+}
 
 async function loadClearanceManagement() {
     const container = document.getElementById('adminContent');
@@ -226,24 +399,184 @@ async function loadClearanceManagement() {
         <div class="card"><h3>Pending Clearance (${pending.length})</h3>${pending.map(s=>`<div class="student-item"><div>${s.name} (${s.id})</div><button onclick="quickClear('${s.id}')">Clear</button></div>`).join('')}</div>
     `;
 }
-async function toggleClearance() { showToast("Clearance toggled", "success"); }
-async function quickClear(id) { showToast(`Student ${id} cleared`, "success"); }
+async function toggleClearance() {
+    const id = document.getElementById('clearanceId').value.trim();
+    if (!id) {
+        showToast("Enter a student ID", "error");
+        return;
+    }
+    // Look up current state then flip it
+    try {
+        const res = await fetch(`${SCRIPT_URL}?action=get_student&id=${encodeURIComponent(id)}&api_key=${API_KEY}`);
+        const data = await res.json();
+        if (!data.student) {
+            showToast("Student not found", "error");
+            return;
+        }
+        const newState = !data.student.isCleared;
+        const post = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'toggle_clearance', api_key: API_KEY, id: id, cleared: newState, admin: currentAdmin?.username || 'admin' })
+        });
+        const result = await post.json();
+        if (result.success) {
+            showToast(`${id} ${newState ? 'cleared' : 'un-cleared'}`, "success");
+            loadClearanceManagement();
+        } else {
+            showToast(result.error || "Failed", "error");
+        }
+    } catch (e) {
+        showToast("Network error: " + e.message, "error");
+    }
+}
+
+async function quickClear(id) {
+    try {
+        const res = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'toggle_clearance', api_key: API_KEY, id: id, cleared: true, admin: currentAdmin?.username || 'admin' })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showToast(`Student ${id} cleared`, "success");
+            loadClearanceManagement();
+        } else {
+            showToast(result.error || "Failed", "error");
+        }
+    } catch (e) {
+        showToast("Network error: " + e.message, "error");
+    }
+}
 
 async function loadSendNotifications() {
     const container = document.getElementById('adminContent');
-    container.innerHTML = `<div class="card"><h3>Send Notification</h3><form onsubmit="event.preventDefault(); sendNotification();"><input type="text" id="notifTitle" placeholder="Title" required><textarea id="notifMessage" rows="4" placeholder="Message" required></textarea><button type="submit">Send</button></form></div>`;
+    container.innerHTML = `
+        <div class="card">
+            <h3>Send Notification</h3>
+            <form onsubmit="event.preventDefault(); sendNotification();" style="display:grid; gap:10px;">
+                <input type="text" id="notifTitle" placeholder="Title" required>
+                <textarea id="notifMessage" rows="4" placeholder="Message" required></textarea>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px;">
+                    <select id="notifType">
+                        <option value="info">Info</option>
+                        <option value="warning">Warning</option>
+                        <option value="success">Success</option>
+                        <option value="danger">Urgent</option>
+                    </select>
+                    <select id="notifTargetType" onchange="updateTargetFields()">
+                        <option value="all">All Students</option>
+                        <option value="program">Specific Program</option>
+                        <option value="level">Specific Level</option>
+                        <option value="student">Single Student</option>
+                    </select>
+                    <input type="text" id="notifTarget" placeholder="Target (e.g., RM, 200, CCST/RM/24/001)" style="display:none;">
+                </div>
+                <button type="submit">Send Notification</button>
+            </form>
+        </div>
+    `;
 }
-async function sendNotification() { showToast("Notification sent!", "success"); }
+
+function updateTargetFields() {
+    const t = document.getElementById('notifTargetType').value;
+    const field = document.getElementById('notifTarget');
+    if (t === 'all') {
+        field.style.display = 'none';
+        field.value = '';
+    } else {
+        field.style.display = 'block';
+        field.placeholder = t === 'program' ? 'Program (RM, RN, ML)' : t === 'level' ? 'Level (100, 200, 300)' : 'Student ID';
+    }
+}
+
+async function sendNotification() {
+    const title = document.getElementById('notifTitle').value.trim();
+    const message = document.getElementById('notifMessage').value.trim();
+    const type = document.getElementById('notifType').value;
+    const targetType = document.getElementById('notifTargetType').value;
+    const target = document.getElementById('notifTarget').value.trim();
+
+    if (!title || !message) {
+        showToast("Title and message are required", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'send_notification', api_key: API_KEY, title, message, type, targetType, target })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showToast("Notification sent!", "success");
+            document.getElementById('notifTitle').value = '';
+            document.getElementById('notifMessage').value = '';
+        } else {
+            showToast(result.error || "Failed", "error");
+        }
+    } catch (e) {
+        showToast("Network error: " + e.message, "error");
+    }
+}
 
 async function loadTranscriptRequests() {
     const container = document.getElementById('adminContent');
-    container.innerHTML = `<div class="card"><h3>Transcript Requests</h3><p>No pending requests.</p></div>`;
+    container.innerHTML = `<div class="card"><h3><i class="fas fa-spinner fa-spin"></i> Loading requests...</h3></div>`;
+    try {
+        const res = await fetch(`${SCRIPT_URL}?action=get_pending_requests&api_key=${API_KEY}`);
+        const data = await res.json();
+        const requests = data.requests || [];
+        if (requests.length === 0) {
+            container.innerHTML = `<div class="card"><h3>Transcript Requests</h3><p>No pending requests.</p></div>`;
+            return;
+        }
+        container.innerHTML = `
+            <div class="card">
+                <h3>Pending Transcript Requests (${requests.length})</h3>
+                ${requests.map(r => `
+                    <div class="student-item">
+                        <div>
+                            <strong>${r.name || ''}</strong> (${r.id})<br>
+                            <small>${r.program} | ${r.purpose} | ${r.copies} copy/copies</small><br>
+                            <small style="color:#666;">Submitted: ${r.date}</small>
+                        </div>
+                        <div>
+                            <button onclick="markRequestDone('${r.id}')" class="btn-success">Mark Done</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } catch (e) {
+        container.innerHTML = `<div class="card"><h3>Transcript Requests</h3><p style="color:red;">Error loading: ${e.message}</p></div>`;
+    }
+}
+
+function markRequestDone(id) {
+    // Backend doesn't have a "mark done" action exposed yet — surface a clear
+    // message so the admin knows what to do manually.
+    showToast(`Mark request ${id} as completed in the TranscriptRequests sheet (Status column)`, "info");
 }
 
 // Initialize
 window.onload = function() {
     const adminSession = sessionStorage.getItem('adminLoggedIn');
-    if (adminSession === 'true') { document.getElementById('loginOverlay').classList.add('hide'); document.getElementById('adminDashboard').style.display = 'flex'; loadOverview(); }
+    if (adminSession === 'true') {
+        document.getElementById('loginOverlay').classList.add('hide');
+        document.getElementById('adminDashboard').style.display = 'flex';
+        const stored = sessionStorage.getItem('adminUser');
+        if (stored) {
+            try {
+                const u = JSON.parse(stored);
+                currentAdmin = u;
+                document.getElementById('adminName').innerText = u.name || 'Administrator';
+            } catch (e) {}
+        }
+        loadOverview();
+    }
 };
 </script>
 </body>
